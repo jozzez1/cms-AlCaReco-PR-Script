@@ -55,7 +55,7 @@ elif len(sys.argv) == 2:
          os.system("eval `scramv1 runtime -sh`")
          LaunchOnCondor.SendCluster_Create(FarmDirectory, JobName)
          for workflow in toCompare[2]:
-            LaunchOnCondor.SendCluster_Push (["BASH", "runTheMatrix.py -l %s --command=\"-n %i\"; mv %s* %s/%s/%s/src/testDir/%s/outputs/" % (workflow[0], workflow[1], workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory)]);
+            LaunchOnCondor.SendCluster_Push (["BASH", "runTheMatrix.py -l %s --command=\"-n %i\"; mv %s* %s/%s/%s/src/testDir/%s/outputs/results_%s" % (workflow[0], workflow[1], workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory, workflow[0])]);
             LaunchOnCondor.Jobs_FinalCmds = ["rm runall-report-step123-.log"]
 #            LaunchOnCondor.Jobs_FinalCmds = ["mv %s* %s/%s/%s/src/testDir/%s/outputs/" % (workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory)]
          os.system("rm -rf %s/%s/%s/src/testDir/%s/outputs/*" % (CWD, toCompare[0], CMSSWREL, FarmDirectory))
@@ -64,7 +64,13 @@ elif len(sys.argv) == 2:
 
    ### make compare the edmEvents stuff
    elif sys.argv[1] == "2":
-      print 'Not finished yet ...'
+      for toCompare in compare:
+         print '*** Creating edm reports for %s ***' % toCompare[0]
+         CMSSWREL = os.listdir("%s/%s" % (CWD, toCompare[0]))[0]
+         os.chdir("%s/%s/%s/src/testDir/FARM/outputs" % (CWD, toCompare[0], CMSSWREL))
+         for workflow in toCompare[2]:
+            os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmEventSize -v -a % > eventSizeReport.log 2>%1")
+            os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmDumpEventContent % > eventContentReport.log 2>%1")
 
    ### compare the plots using validate.C
    elif sys.argv[1] == "3":
