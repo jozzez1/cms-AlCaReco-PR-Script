@@ -17,8 +17,8 @@ import commands
 CWD       = os.getcwd()
 compare   = [
         #dirname #pull #list of workflows for runTheMatrix.py
-       ["vanilla", 0, [["1000.0", 5000], ["1001.0", 5000], ["135.4", 5000], ["140.53", 5000], ["4.22", 5000], ["8.0", 5000]]],
-       ["changes", 1, [["1000.0", 5000], ["1001.0", 5000], ["135.4", 5000], ["140.53", 5000], ["4.22", 5000], ["8.0", 5000]]],
+       ["vanilla", 0, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 10000], ["140.53", 10000], ["4.22", 10000], ["8.0", 10000]]],
+       ["changes", 1, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 10000], ["140.53", 10000], ["4.22", 10000], ["8.0", 10000]]],
 ]
 
 ### equivallent to step 0 -- we prepare the terrain
@@ -55,7 +55,7 @@ elif len(sys.argv) == 2:
          os.system("eval `scramv1 runtime -sh`")
          LaunchOnCondor.SendCluster_Create(FarmDirectory, JobName)
          for workflow in toCompare[2]:
-            LaunchOnCondor.SendCluster_Push (["BASH", "runTheMatrix.py -l %s --command=\"-n %i\"; mv %s* %s/%s/%s/src/testDir/%s/outputs/results_%s" % (workflow[0], workflow[1], workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory, workflow[0])]);
+            LaunchOnCondor.SendCluster_Push (["BASH", "runTheMatrix.py -l %s --command=\"-n %i\"; mv %s* %s/%s/%s/src/testDir/%s/outputs/results_%s" % (workflow[0], workflow[1], workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory, workflow[0])])
             LaunchOnCondor.Jobs_FinalCmds = ["rm runall-report-step123-.log"]
 #            LaunchOnCondor.Jobs_FinalCmds = ["mv %s* %s/%s/%s/src/testDir/%s/outputs/" % (workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory)]
          os.system("rm -rf %s/%s/%s/src/testDir/%s/outputs/*" % (CWD, toCompare[0], CMSSWREL, FarmDirectory))
@@ -71,6 +71,7 @@ elif len(sys.argv) == 2:
          for workflow in toCompare[2]:
             os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmEventSize -v -a % > eventSizeReport.log 2>&1" % workflow[0])
             os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmDumpEventContent % > eventContentReport.log 2>&1" % workflow[0])
+         os.chdir(CWD)
 
    ### compare the plots using validate.C
    elif sys.argv[1] == "3":
