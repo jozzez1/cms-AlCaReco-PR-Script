@@ -69,8 +69,8 @@ elif len(sys.argv) == 2:
          CMSSWREL = os.listdir("%s/%s" % (CWD, toCompare[0]))[0]
          os.chdir("%s/%s/%s/src/testDir/FARM/outputs" % (CWD, toCompare[0], CMSSWREL))
          for workflow in toCompare[2]:
-            os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmEventSize -v -a % > eventSizeReport.log 2>%1")
-            os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmDumpEventContent % > eventContentReport.log 2>%1")
+            os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmEventSize -v -a % > eventSizeReport.log 2>%1" % workflow[0])
+            os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmDumpEventContent % > eventContentReport.log 2>%1" % workflow[0])
 
    ### compare the plots using validate.C
    elif sys.argv[1] == "3":
