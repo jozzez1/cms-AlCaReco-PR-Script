@@ -1,7 +1,7 @@
 # Readme
 
 
-This is a small script with which it is easier to compare changes in `CMSSW`. It creates different versions of CMSSW, applies the requested changes, compiles them and then uses the `runTheMatrix.py` to create some samples which are generated at the cluster, using `LaunchOnCondor.py`, written by Loic Quertenmont. After the samples are created, script compares different AlCaReco root files using `edmEventSize` and `edmDumpEventContent`. With the final step it also produces plots using modified version of `validate.C` from the cms-bot.
+This is a small script with which it is easier to compare changes in CMSSW. It creates different versions of CMSSW, applies the requested changes, compiles them and then uses the `runTheMatrix.py` to create some samples which are generated at the cluster, using `LaunchOnCondor.py`, written by Loic Quertenmont. After the samples are created, script compares different AlCaReco root files using `edmEventSize` and `edmDumpEventContent`. With the final step it also produces plots using modified version of `validate.C` from the cms-bot.
 
 ## Step 0
 You should start by editing the `compare` variable. Each element is a list:
