@@ -19,9 +19,22 @@ python CheckPullRequest.py CMSSW_8_1_X_2016-05-11-1100 14406
 
 ## Step 1
 
-For this step you need the `LaunchOnCondor.py` script (included in the repository). This will now submit the workflows to the cluster. Results are moved to the `CMSSW_RELEASENUMBER/src/testDir/FARM/outputs` directory.
+For this step you need the `LaunchOnCondor.py` script (included in the repository). This will now submit the workflows to the cluster. Results are moved to the `CMSSW_RELEASENUMBER/src/testDir/FARM/outputs` directory. Example:
+```
+python CheckPullRequest.py 1
+```
 
 
 ## Step 2
 
-In this final step we process the results. Programs `edmDumpEventContent` and `edmEventSize` produce logfiles, which you can then compare using `vimdiff` or just `diff`, for plots it will use the `validate.C` from the `cms-bot` repository.
+In this final step we process the results. Programs `edmDumpEventContent` and `edmEventSize` produce logfiles, which you can then compare using `vimdiff` or just `diff`, for plots it will use the `validate.C` from the `cms-bot` repository. Example:
+```
+python CheckPullRequest.py 2
+```
+
+## Cleaning
+
+Finally, if you mess up and you just want to quickly remove all the CMSSW you just produced including the results etc. you can just run
+```
+python CheckPullRequest.py clean
+```
