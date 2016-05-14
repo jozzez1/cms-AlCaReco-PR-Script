@@ -7,7 +7,7 @@ This is a small script with which it is easier to compare changes in `CMSSW`. It
 You should start by editing the `compare` variable. Each element is a list:
 ```
 compare = [["name of the directory with the CMSSW version", "apply the PR or not", "workflowList"]]
-workflowList = ["workflow number", "number of events to generate"]
+workflowList = [["workflow number", "number of events to generate"], ["...", "..."], ...]
 ```
 It should run out of the box, but in case you have to change the values there, it is best to do it at the very beginning.
 
