@@ -58,6 +58,7 @@ elif len(sys.argv) == 2:
             LaunchOnCondor.SendCluster_Push (["BASH", "runTheMatrix.py -l %s --command=\"-n %i\"; mv %s* %s/%s/%s/src/testDir/%s/outputs/" % (workflow[0], workflow[1], workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory)]);
             LaunchOnCondor.Jobs_FinalCmds = ["rm runall-report-step123-.log"]
 #            LaunchOnCondor.Jobs_FinalCmds = ["mv %s* %s/%s/%s/src/testDir/%s/outputs/" % (workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory)]
+         os.system("rm -rf %s/%s/%s/src/testDir/%s/outputs/*" % (CWD, toCompare[0], CMSSWREL, FarmDirectory))
          LaunchOnCondor.SendCluster_Submit()
          os.chdir(CWD)
 
