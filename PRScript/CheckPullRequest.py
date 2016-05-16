@@ -22,13 +22,17 @@ compare   = [
        ["changes", 1, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 1000], ["140.53", 1000], ["4.22", 1000], ["8.0", 1000]]],
 ]
 
+if os.environ.get('SCRAM_ARCH') == '':
+   os.environ['SCRAM_ARCH']='slc6_amd64_gcc530'
+
+print 'SCRAM_ARCH =', os.environ.get('SCRAM_ARCH')
+
 ### equivallent to step 0 -- we prepare the terrain
 if len(sys.argv) == 3:
    CMSSWREL = sys.argv[1]
    for toCompare in compare:
       os.system("mkdir %s" % toCompare[0])
       os.chdir("%s/%s" % (CWD, toCompare[0]))
-      os.system("export SCRAM_ARCH=slc6_amd64_gcc530")
       os.system("scramv1 project %s" % CMSSWREL)
       print "*** Preparing %s ***" % toCompare[0]
       os.chdir("%s/%s/%s/src" % (CWD, toCompare[0], CMSSWREL))

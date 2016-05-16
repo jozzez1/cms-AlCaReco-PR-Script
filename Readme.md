@@ -11,7 +11,7 @@ workflowList = [["workflow number", "number of events to generate"], ["...", "..
 ```
 It should run out of the box, but in case you have to change the values there, it is best to do it at the very beginning.
 
-Now you are ready to run the script. Set up the `SCRAM_ARCH` environment variable first. It takes two arguments: first is the CMSSW release and second is the pull request number. Example:
+Now you are ready to run the script. The `SCRAM_ARCH` should be set up automatically to default value for `CMSSW_8_1_X`, which is `slc6_amd64_gcc530`, but if this is not correct, please export it yourself by either modifying a script or your own call. In this step, the script takes two arguments: first is the CMSSW release and second is the pull request number. Example:
 ```
 export SCRAM_ARCH=slc6_amd64_gcc530
 python CheckPullRequest.py CMSSW_8_1_X_2016-05-11-1100 14406
@@ -27,9 +27,15 @@ python CheckPullRequest.py 1
 
 ## Step 2
 
-In this final step we process the results. Programs `edmDumpEventContent` and `edmEventSize` produce logfiles, which you can then compare using `vimdiff` or just `diff`, for plots it will use the `validate.C` from the `cms-bot` repository. Example:
+In this step we process the results. Programs `edmDumpEventContent` and `edmEventSize` produce logfiles, which you can then compare using `vimdiff` or just `diff`. Example:
 ```
 python CheckPullRequest.py 2
+```
+
+## Step 3
+In this final step we produce plots using `validate.C` from the `cms-bot` repository. Example:
+```
+python CheckPullRequest.py 3
 ```
 
 ## Cleaning
