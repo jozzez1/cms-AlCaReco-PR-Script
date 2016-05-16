@@ -89,6 +89,9 @@ elif len(sys.argv) == 2:
                os.system("eval `scramv1 runtime -sh` && edmEventSize -v -a %s.root > eventSize_%s_%s.log 2>&1" % (toCheck, workflow[0], toCheck))
                print "   edmDumpEventContent %s.root > eventContent_%s_%s.log 2>&1" % (toCheck, workflow[0], toCheck)
                os.system("eval `scramv1 runtime -sh` && edmDumpEventContent %s.root > eventContent_%s_%s.log 2>&1" % (toCheck, workflow[0], toCheck))
+            print "Merging eventSize logs ..."
+            print "   cat eventSize_%s* > %s/eventSize_%s_%s.summary" % (workflow[0], CWD, toCompare[0], workflow[0])
+            os.system("cat eventSize_%s* > %s/eventSize_%s_%s.summary" % (workflow[0], CWD, toCompare[0], workflow[0]))
             os.chdir("../")
             print "\n"
          os.chdir(CWD)
