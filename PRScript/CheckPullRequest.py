@@ -18,10 +18,8 @@ import subprocess
 CWD       = os.getcwd()
 compare   = [
         #dirname #pull #list of workflows for runTheMatrix.py
-#       ["vanilla", 0, [["1000.0", 10000], ["1001.0", 10000], ["4.22", 10000], ["8.0", 10000]]],
-#       ["changes", 1, [["1000.0", 10000], ["1001.0", 10000], ["4.22", 10000], ["8.0", 10000]]],
-       ["vanilla", 0, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 10000], ["140.53", 10000], ["4.22", 10000], ["8.0", 10000]]],
-       ["changes", 1, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 10000], ["140.53", 10000], ["4.22", 10000], ["8.0", 10000]]],
+       ["vanilla", 0, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 1000], ["140.53", 1000], ["4.22", 1000], ["8.0", 1000]]],
+       ["changes", 1, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 1000], ["140.53", 1000], ["4.22", 1000], ["8.0", 1000]]],
 ]
 
 ### equivallent to step 0 -- we prepare the terrain
@@ -65,7 +63,7 @@ elif len(sys.argv) == 2:
          LaunchOnCondor.SendCluster_Submit()
          os.chdir(CWD)
 
-   ### make compare the edmEvents stuff
+   ### compare the edmEvents stuff
    elif sys.argv[1] == "2":
       for toCompare in compare:
          print '========================================\n*** Creating edm reports for %s ***\n' % toCompare[0]
