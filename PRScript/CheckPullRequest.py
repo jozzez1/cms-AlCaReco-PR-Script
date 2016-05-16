@@ -10,6 +10,7 @@ import LaunchOnCondor
 import glob
 import time
 import commands
+import subprocess
 
 # 1st argument is the name of the CMSSW release
 # 2nd argument is the ref. number of the pull request, e.g. 14406, read it from the browser
@@ -17,6 +18,8 @@ import commands
 CWD       = os.getcwd()
 compare   = [
         #dirname #pull #list of workflows for runTheMatrix.py
+#       ["vanilla", 0, [["1000.0", 10000], ["1001.0", 10000], ["4.22", 10000], ["8.0", 10000]]],
+#       ["changes", 1, [["1000.0", 10000], ["1001.0", 10000], ["4.22", 10000], ["8.0", 10000]]],
        ["vanilla", 0, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 10000], ["140.53", 10000], ["4.22", 10000], ["8.0", 10000]]],
        ["changes", 1, [["1000.0", 10000], ["1001.0", 10000], ["135.4", 10000], ["140.53", 10000], ["4.22", 10000], ["8.0", 10000]]],
 ]
@@ -56,8 +59,8 @@ elif len(sys.argv) == 2:
          LaunchOnCondor.SendCluster_Create(FarmDirectory, JobName)
          for workflow in toCompare[2]:
             LaunchOnCondor.SendCluster_Push (["BASH", "runTheMatrix.py -l %s --command=\"-n %i\"; mv %s* %s/%s/%s/src/testDir/%s/outputs/results_%s" % (workflow[0], workflow[1], workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory, workflow[0])])
-            LaunchOnCondor.Jobs_FinalCmds = ["rm runall-report-step123-.log"]
-#            LaunchOnCondor.Jobs_FinalCmds = ["mv %s* %s/%s/%s/src/testDir/%s/outputs/" % (workflow[0], CWD, toCompare[0], CMSSWREL, FarmDirectory)]
+            LaunchOnCondor.Jobs_FinalCmds = ["rm -f runall-report-step123-.log"]
+
          os.system("rm -rf %s/%s/%s/src/testDir/%s/outputs/*" % (CWD, toCompare[0], CMSSWREL, FarmDirectory))
          LaunchOnCondor.SendCluster_Submit()
          os.chdir(CWD)
@@ -65,12 +68,29 @@ elif len(sys.argv) == 2:
    ### make compare the edmEvents stuff
    elif sys.argv[1] == "2":
       for toCompare in compare:
-         print '*** Creating edm reports for %s ***' % toCompare[0]
+         print '========================================\n*** Creating edm reports for %s ***\n' % toCompare[0]
          CMSSWREL = os.listdir("%s/%s" % (CWD, toCompare[0]))[0]
          os.chdir("%s/%s/%s/src/testDir/FARM/outputs" % (CWD, toCompare[0], CMSSWREL))
          for workflow in toCompare[2]:
-            os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmEventSize -v -a % > eventSizeReport.log 2>&1" % workflow[0])
-            os.system("eval `scramv1 runtime -sh` && find result_%s -name \"*root\" | grep AlCa | xargs -I% edmDumpEventContent % > eventContentReport.log 2>&1" % workflow[0])
+            if os.path.isdir("results_%s" % workflow[0]):
+               os.chdir("results_%s" % workflow[0])
+            else:
+               print "results_%s is missing! Could be due to disk quota or other problems." % workflow[0]
+               continue
+
+            ListOfFilesToCheck = os.popen("find . -name \"step?_ALCA*.py\" -exec grep -l root {} + | xargs -I% grep root % | grep -v step | grep -v Names | awk '{print $3}' | cut -c 23- | sed \"s/.root\'),//g\"").read().split()
+            if len(ListOfFilesToCheck) == 0:
+               print workflow[0], "\thas no AlCaReco root files."
+               continue
+
+            print "Creating logs of", workflow[0], ":"
+            for toCheck in ListOfFilesToCheck:
+               print "   edmEventSize -v -a %s.root > eventSize_%s_%s.log 2>&1" % (toCheck, workflow[0], toCheck)
+               os.system("eval `scramv1 runtime -sh` && edmEventSize -v -a %s.root > eventSize_%s_%s.log 2>&1" % (toCheck, workflow[0], toCheck))
+               print "   edmDumpEventContent %s.root > eventContent_%s_%s.log 2>&1" % (toCheck, workflow[0], toCheck)
+               os.system("eval `scramv1 runtime -sh` && edmDumpEventContent %s.root > eventContent_%s_%s.log 2>&1" % (toCheck, workflow[0], toCheck))
+            os.chdir("../")
+            print "\n"
          os.chdir(CWD)
 
    ### compare the plots using validate.C
